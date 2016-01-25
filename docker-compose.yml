@@ -1,0 +1,18 @@
+postgres:
+  image: postgres:9.5
+  hostname: bareos-database-postgres
+
+bareos-director:
+  # image: localhost/bareos-director:15.2.2-37.1
+  image: localhost/bareos:dev
+  hostname: bareos-director
+  volumes:
+    - ./conf.d:/etc/bareos
+    - .dbconfig:/etc/dbconfig-common
+  expose:
+    - 9101
+  links:
+    - postgres:bareos-database-postgres
+  log_driver: "none"
+  restart: always
+  command: bareos-dir -c /etc/bareos/bareos-dir.conf -u bareos -f
